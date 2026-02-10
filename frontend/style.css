@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    padding: 40px;
+}
+
+h1 {
+    color: #333;
+}
+
+input,
+button {
+    padding: 10px;
+    margin: 5px 0;
+    display: block;
+}
+
+button {
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005a9e;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.calendar-day {
+    border: 1px solid #ccc;
+    padding: 15px;
+    min-height: 60px;
+    cursor: pointer;
+    background: white;
+}
+
+.calendar-day:hover {
+    background-color: #e6f0ff;
+}
+
+.calendar-header {
+    font-weight: bold;
+    text-align: center;
+    background: #0078d4;
+    color: white;
+}
+
+.has-task {
+    background-color: #cfe2ff;
+    border: 2px solid #0078d4;
+}
+
+#monthYear {
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.today {
+    border: 2px solid #28a745;
+    background-color: #d4edda;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #0078d4;
+    color: white;
+}
+
+.status-Pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-In\ Progress {
+    color: blue;
+    font-weight: bold;
+}
+
+.status-Completed {
+    color: green;
+    font-weight: bold;
+}

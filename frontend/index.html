@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calender Planner</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <h1>My Calender Planner</h1>
+    <h2>Calendar</h2>
+    <div>
+        <button id="prevMonth">◀ Prev</button>
+        <span id="monthYear"></span>
+        <button id="nextMonth">Next ▶</button>
+    </div>
+
+    <div id="calendar"></div>
+
+
+    <input type="text" id="taskInput" placeholder="Write a task" />
+    <input type="date" id="dateInput" />
+    <button id="addBtn">Add Task</button>
+    <h3>View tasks by date</h3>
+    <input type="date" id="filterDate">
+
+
+    <ul id="taskList"></ul>
+    <button onclick="logout()">Logout</button>
+    
+    <script>
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        }
+    </script>
+
+
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>
