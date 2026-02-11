@@ -9,6 +9,9 @@ const Task = require("./models/Task");
 const app = express();
 const JWT_SECRET = "MY_SUPER_SECRET_KEY";
 
+const Event = require("./models/Event");
+
+
 /* =========================
    MIDDLEWARES
 ========================= */
@@ -151,6 +154,22 @@ app.get("/tasks/all", verifyToken, async (req, res) => {
 
     res.json(tasks);
 });
+
+// ADD EVENT
+app.post("/events", verifyToken, async (req, res) => {
+    const event = await Event.create({
+        ...req.body,
+        createdBy: req.userId
+    });
+    res.json(event);
+});
+
+// GET EVENTS
+app.get("/events", verifyToken, async (req, res) => {
+    const events = await Event.find({ createdBy: req.userId });
+    res.json(events);
+});
+
 
 /* =========================
    SERVER

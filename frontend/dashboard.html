@@ -2,27 +2,32 @@
 <html>
 
 <head>
-    <title>Team Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Login | TeamPlan</title>
+    <link rel="stylesheet" href="auth.css">
 </head>
 
 <body>
 
-    <h2>📊 Team Task Dashboard</h2>
+    <div class="auth-box">
+        <h1>Sign In</h1>
 
-    <table id="taskTable">
-        <thead>
-            <tr>
-                <th>Task</th>
-                <th>Date</th>
-                <th>Assigned By</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <input type="email" placeholder="Email address" required>
+        <input type="password" placeholder="Password" required>
 
-    <script src="dashboard.js"></script>
+        <button onclick="login()">Sign In</button>
+
+        <div class="auth-footer">
+            New to TeamPlan? <a href="signup.html">Sign up now</a>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            // temporary redirect
+            window.location.href = "index.html";
+        }
+    </script>
+
 </body>
 
 </html>

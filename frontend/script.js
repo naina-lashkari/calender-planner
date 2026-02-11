@@ -1,152 +1,138 @@
-const taskInput = document.getElementById("taskInput");
-const dateInput = document.getElementById("dateInput");
-const addBtn = document.getElementById("addBtn");
-const taskList = document.getElementById("taskList");
-const prevMonthBtn = document.getElementById("prevMonth");
-const nextMonthBtn = document.getElementById("nextMonth");
-const monthYear = document.getElementById("monthYear");
 const calendar = document.getElementById("calendar");
+const monthYear = document.getElementById("monthYear");
+let current = new Date();
 
-const token = localStorage.getItem("token");
-let currentDate = new Date();
-
-/* =========================
-   AUTH CHECK
-========================= */
-if (!token) {
-    window.location.href = "login.html";
-}
-
-/* =========================
-   PAGE LOAD
-========================= */
-window.onload = () => {
-    loadTasks();
-    generateCalendar();
-};
-
-function authHeaders() {
-    return {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-    };
-}
-
-/* =========================
-   LOAD TASKS
-========================= */
-function loadTasks() {
-    taskList.innerHTML = "";
-
-    fetch("http://localhost:3000/tasks", {
-        headers: authHeaders()
-    })
-        .then(res => res.json())
-        .then(tasks => {
-            tasks.forEach(t =>
-                addTaskToUI(t._id, t.text, t.date)
-            );
-        });
-}
-
-/* =========================
-   ADD TASK
-========================= */
-addBtn.onclick = () => {
-    const text = taskInput.value;
-    const date = dateInput.value;
-
-    fetch("http://localhost:3000/tasks", {
-        method: "POST",
-        headers: authHeaders(),
-        body: JSON.stringify({ text, date })
-    })
-        .then(() => {
-            taskInput.value = "";
-            dateInput.value = "";
-            loadTasks();
-            generateCalendar();
-        });
-};
-
-/* =========================
-   TASK UI
-========================= */
-function addTaskToUI(id, text, date) {
-    const li = document.createElement("li");
-    li.textContent = `${text} (${date})`;
-
-    li.onclick = () => {
-        if (!confirm("Delete task?")) return;
-
-        fetch(`http://localhost:3000/tasks/${id}`, {
-            method: "DELETE",
-            headers: authHeaders()
-        }).then(() => {
-            taskList.removeChild(li);
-            generateCalendar();
-        });
-    };
-
-    taskList.appendChild(li);
-}
-
-/* =========================
-   CALENDAR
-========================= */
-async function generateCalendar() {
+/* CALENDAR */
+function renderCalendar() {
     calendar.innerHTML = "";
+    const year = current.getFullYear();
+    const month = current.getMonth();
 
-    const res = await fetch("http://localhost:3000/tasks", {
-        headers: authHeaders()
-    });
-    const tasks = await res.json();
-
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    days.forEach(d => {
-        const div = document.createElement("div");
-        div.textContent = d;
-        div.className = "calendar-header";
-        calendar.appendChild(div);
+    monthYear.innerText = current.toLocaleString("default", {
+        month: "long",
+        year: "numeric"
     });
 
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    monthYear.textContent =
-        new Date(year, month).toLocaleString("default", {
-            month: "long",
-            year: "numeric"
-        });
+    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach(d => {
+        const h = document.createElement("div");
+        h.className = "day header";
+        h.innerText = d;
+        calendar.appendChild(h);
+    });
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const totalDays = new Date(year, month + 1, 0).getDate();
+    const first = new Date(year, month, 1).getDay();
+    const total = new Date(year, month + 1, 0).getDate();
 
-    for (let i = 0; i < firstDay; i++)
+    for (let i = 0; i < first; i++) {
         calendar.appendChild(document.createElement("div"));
+    }
 
-    for (let d = 1; d <= totalDays; d++) {
-        const div = document.createElement("div");
-        div.className = "calendar-day";
-        div.textContent = d;
-
-        const dateStr =
-            `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-
-        if (tasks.some(t => t.date === dateStr))
-            div.classList.add("has-task");
-
-        calendar.appendChild(div);
+    for (let d = 1; d <= total; d++) {
+        const cell = document.createElement("div");
+        cell.className = "day";
+        cell.innerText = d;
+        calendar.appendChild(cell);
     }
 }
+renderCalendar();
 
-/* =========================
-   MONTH NAV
-========================= */
-prevMonthBtn.onclick = () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    generateCalendar();
+document.getElementById("prevMonth").onclick = () => {
+    current.setMonth(current.getMonth() - 1);
+    renderCalendar();
 };
-nextMonthBtn.onclick = () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    generateCalendar();
+document.getElementById("nextMonth").onclick = () => {
+    current.setMonth(current.getMonth() + 1);
+    renderCalendar();
 };
+
+/* CREATE MENU */
+const menu = document.getElementById("createMenu");
+document.getElementById("createBtn").onclick = () => {
+    menu.classList.toggle("show");
+};
+
+/* MODALS */
+function openEvent() {
+    closeAll();
+    document.getElementById("eventModal").style.display = "flex";
+}
+
+function openTask() {
+    closeAll();
+    document.getElementById("taskModal").style.display = "flex";
+}
+
+function closeAll() {
+    document.getElementById("eventModal").style.display = "none";
+    document.getElementById("taskModal").style.display = "none";
+    menu.classList.remove("show");
+}
+
+/* THEME */
+document.getElementById("themeToggle").onclick = () => {
+    document.body.classList.toggle("dark");
+};
+
+/* SAVE EVENT → DB */
+async function saveEvent() {
+    const inputs = document.querySelectorAll("#eventModal input");
+
+    const event = {
+        title: inputs[0].value,
+        date: inputs[1].value,
+        startTime: inputs[2].value,
+        endTime: inputs[3].value,
+        location: inputs[4].value
+    };
+
+    const res = await fetch("http://localhost:3000/events", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify(event)
+    });
+
+    if (!res.ok) {
+        alert("Event save failed");
+        return;
+    }
+
+    alert("✅ Event saved to database");
+    closeAll();
+}
+
+/* SAVE TASK → DB */
+async function saveTask() {
+    const inputs = document.querySelectorAll("#taskModal input, #taskModal textarea");
+
+    const task = {
+        title: inputs[0].value,
+        description: inputs[1].value,
+        dueDate: inputs[2].value
+    };
+
+    const res = await fetch("http://localhost:3000/tasks", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify(task)
+    });
+
+    if (!res.ok) {
+        alert("Task save failed");
+        return;
+    }
+
+    alert("✅ Task saved to database");
+    closeAll();
+}
+
+/* LOGOUT */
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}

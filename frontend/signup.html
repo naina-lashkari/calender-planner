@@ -1,48 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Signup</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Signup | TeamPlan</title>
+    <link rel="stylesheet" href="auth.css">
 </head>
 
 <body>
 
-    <h2>Signup</h2>
+    <div class="auth-wrapper">
+        <div class="auth-card">
 
-    <input type="text" id="signupName" placeholder="Name"><br><br>
-    <input type="email" id="signupEmail" placeholder="Email"><br><br>
-    <input type="password" id="signupPassword" placeholder="Password"><br><br>
+            <div class="auth-header">
+                <h1>WELCOME</h1>
+            </div>
 
-    <button id="signupBtn">Signup</button>
+            <div class="auth-body">
+                <h2>CREATE ACCOUNT</h2>
 
-    <p>
-        Already have an account?
-        <a href="login.html">Login here</a>
-    </p>
+                <input type="text" placeholder="Full Name">
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Password">
 
-    <script>
-        document.getElementById("signupBtn").addEventListener("click", async () => {
-            const name = document.getElementById("signupName").value;
-            const email = document.getElementById("signupEmail").value;
-            const password = document.getElementById("signupPassword").value;
+                <button onclick="signup()">Sign up</button>
 
-            const res = await fetch("http://localhost:3000/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password })
-            });
+                <p class="switch-text">
+                    Already have an account?
+                    <a href="login.html">Login</a>
+                </p>
+            </div>
 
-            const data = await res.json();
-            alert(data.message);
+        </div>
+    </div>
 
-            if (res.ok) {
-                window.location.href = "login.html";
-            }
-        });
-    </script>
-
-
+    <script src="auth.js"></script>
 </body>
 
 </html>

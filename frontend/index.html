@@ -2,45 +2,91 @@
 <html>
 
 <head>
-    <title>Calender Planner</title>
+    <title>TeamPlan | Calendar</title>
     <link rel="stylesheet" href="style.css">
 
-</head>
-
-<body>
-
-    <h1>My Calender Planner</h1>
-    <h2>Calendar</h2>
-    <div>
-        <button id="prevMonth">◀ Prev</button>
-        <span id="monthYear"></span>
-        <button id="nextMonth">Next ▶</button>
-    </div>
-
-    <div id="calendar"></div>
-
-
-    <input type="text" id="taskInput" placeholder="Write a task" />
-    <input type="date" id="dateInput" />
-    <button id="addBtn">Add Task</button>
-    <h3>View tasks by date</h3>
-    <input type="date" id="filterDate">
-
-
-    <ul id="taskList"></ul>
-    <button onclick="logout()">Logout</button>
-    
     <script>
-        function logout() {
-            localStorage.removeItem("token");
+        if (!localStorage.getItem("token")) {
             window.location.href = "login.html";
         }
     </script>
+</head>
 
+<body class="light">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">TeamPlan</h2>
+        <a class="active">📅 Calendar</a>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a>💬 Messenger</a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+            <h2>Calendar</h2>
+
+            <div class="actions">
+                <div class="create">
+                    <button id="createBtn">+ Create</button>
+                    <div class="menu" id="createMenu">
+                        <div onclick="openEvent()">Event</div>
+                        <div onclick="openTask()">Task</div>
+                    </div>
+                </div>
+
+                <button id="themeToggle">🌙</button>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <!-- MONTH -->
+        <div class="month">
+            <button id="prevMonth">◀</button>
+            <span id="monthYear"></span>
+            <button id="nextMonth">▶</button>
+        </div>
+
+        <!-- CALENDAR -->
+        <div id="calendar"></div>
+    </main>
+
+    <!-- EVENT MODAL -->
+    <div class="modal" id="eventModal">
+        <div class="modal-box">
+            <h3>New Event</h3>
+            <input placeholder="Event name">
+            <input type="date">
+            <input type="time">
+            <input type="time">
+            <input placeholder="Location">
+
+            <div class="modal-actions">
+                <button class="primary" onclick="saveEvent()">Save</button>
+                <button onclick="closeAll()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TASK MODAL -->
+    <div class="modal" id="taskModal">
+        <div class="modal-box">
+            <h3>New Task</h3>
+            <input placeholder="Task name">
+            <textarea placeholder="Description"></textarea>
+            <input type="date">
+
+            <div class="modal-actions">
+                <button class="primary" onclick="saveTask()">Create</button>
+                <button onclick="closeAll()">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
-
-
 </body>
 
 </html>
